@@ -1,19 +1,26 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Cliente } from './cliente';
+import { ClienteService } from './cliente.service';
+
 
 @Component({
   selector: 'app-clientes',
   templateUrl: './clientes.component.html',
   styleUrls: ['./clientes.component.css']
 })
-export class ClientesComponent {
+export class ClientesComponent implements OnInit {
+  
+  clientes: Cliente[];
 
-  clientes: Cliente[] = [
-    { id: 1, nombre: 'Oscar', apellido: 'Santamaria', email: 'osantmaria@gmail.com', createAt: '2023-04-04' },
-    { id: 2, nombre: 'Luis', apellido: 'Venegas', email: 'lvenegas@gmail.com', createAt: '2023-04-04'},
-    { id: 3, nombre: 'Karla', apellido: 'Solis', email: 'ksolis@gmail.com', createAt: '2023-04-04'},
-    { id: 4, nombre: 'Melissa', apellido: 'Protti', email: 'mprotti@gmail.com', createAt: '2023-04-04'},
-    { id: 5, nombre: 'Ronald', apellido: 'Palacios', email: 'rpalacios@gmail.com', createAt: '2023-04-04'}
-  ];
+  constructor(private clienteService: ClienteService) {
 
+  }
+
+  ngOnInit(): void {
+    this.clienteService.getClientes().subscribe(
+      clientes => this.clientes = clientes
+    )
+  }
+
+  
 }
