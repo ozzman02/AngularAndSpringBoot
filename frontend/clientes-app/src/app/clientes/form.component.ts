@@ -37,9 +37,18 @@ export class FormComponent implements OnInit {
         this.router.navigate(['/clientes'])
         swal('Cliente guardado', `Cliente ${cliente.nombre} ${cliente.apellido} creado con éxito!`, 'success')
       }
-      
     )
   }
+
+  /* El backend devuelve un map con mensajes */ 
+  /*public create(): void {
+    this.clienteService.create(this.cliente)
+      .subscribe(json => {
+        this.router.navigate(['/clientes'])
+        swal('Cliente guardado', `${json.mensaje}: ${json.cliente.nombre}`, 'success')
+      }
+    )
+  }*/
 
   public update(): void {
     this.clienteService.update(this.cliente)
