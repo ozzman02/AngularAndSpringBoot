@@ -2,16 +2,20 @@ package com.clientes.api.controller;
 
 import com.clientes.api.domain.Cliente;
 import com.clientes.api.service.ClienteService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = {"http://localhost:4200"})
 @RestController
@@ -49,9 +53,16 @@ public class ClienteRestController {
     }
 
     @PostMapping("/clientes")
-    public ResponseEntity<?> create(@RequestBody Cliente cliente) {
+    public ResponseEntity<?> create(@Valid @RequestBody Cliente cliente, BindingResult result) {
         Cliente nuevoCliente;
         Map<String, Object> response = new HashMap<>();
+        if (result.hasErrors()) {
+            List<String> errors = result.getFieldErrors().stream()
+                    .map(error -> "Campo: " + error.getField() + " Error: " + error.getDefaultMessage())
+                    .collect(Collectors.toList());
+            response.put("errors", errors);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
         try {
             nuevoCliente = clienteService.save(cliente);
         } catch (DataAccessException e) {
@@ -65,9 +76,16 @@ public class ClienteRestController {
     }
 
     @PutMapping("/clientes")
-    public ResponseEntity<?> update(@RequestBody Cliente cliente) {
+    public ResponseEntity<?> update(@Valid @RequestBody Cliente cliente, BindingResult result) {
         Cliente clienteActualizado;
         Map<String, Object> response = new HashMap<>();
+        if (result.hasErrors()) {
+            List<String> errors = result.getFieldErrors().stream()
+                    .map(error -> "Campo: " + error.getField() + " Error: " + error.getDefaultMessage())
+                    .collect(Collectors.toList());
+            response.put("errors", errors);
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
         try {
             clienteActualizado = clienteService.saveOrUpdate(cliente);
         } catch (DataAccessException e) {
