@@ -1,3 +1,6 @@
+<ul class="alert alert-danger" *ngIf="errores?.length > 0">
+    <li *ngFor="let err of errores">{{ err }}</li>
+</ul>
 <div class="card bg-dark text-white">
     <div class="card-header">{{ titulo }}</div>
     <div class="card-body">
@@ -6,17 +9,22 @@
             <div class="form-group row">
                 <label for="nombre" class="col-form-label col-sm-2">Nombre</label>
                 <div class="col-sm-6">
-                    <!-- Asignamos la variable #nombre, ngModel tiene los mensajes de error y hacemos referencia a ella en el ngIf -->
+                    <!-- 
+                        Asignamos la variable #nombre, ngModel tiene los mensajes de error y hacemos referencia a ella en el ngIf. 
+                        Se puede usar el atributo required (angular validation ), por ejemplo required minlength="4". 
+                        Si validamos desde el backend lo quitamos ya que deseamos mostrar los mensajes de error del backend 
+                    -->
                     <input 
                         type="text" 
                         class="form-control" 
                         [(ngModel)]="cliente.nombre" 
                         name="nombre" 
-                        required 
                         minlength="4" 
                         #nombre="ngModel">
-                    <!-- dirty significa que muestra el error mientras escribimos hasta que el data sea valido y touched maneja el 
-                    foco del campo al salirse de el -->
+                    <!-- 
+                        dirty significa que muestra el error mientras escribimos hasta que el data sea valido y touched maneja el 
+                        foco del campo al salirse de el 
+                    -->
                     <div class="alert alert-danger" *ngIf="nombre.invalid && (nombre.dirty || nombre.touched)">
                         <div *ngIf="nombre.errors.required">
                             El campo Nombre es requerido
@@ -35,7 +43,6 @@
                         class="form-control" 
                         [(ngModel)]="cliente.apellido" 
                         name="apellido" 
-                        required 
                         #apellido="ngModel">
                     <div class="alert alert-danger" *ngIf="apellido.invalid && (apellido.dirty || apellido.touched)">
                         <div *ngIf="apellido.errors.required">
@@ -47,13 +54,12 @@
             <div class="form-group row">
                 <label for="email" class="col-form-label col-sm-2">Email</label>
                 <div class="col-sm-6">
+                    <!-- Podemos quitar el attributo email (angular validation) para mostrar el mensaje del backend -->
                     <input 
                         type="text" 
                         class="form-control" 
                         [(ngModel)]="cliente.email" 
                         name="email" 
-                        required 
-                        email
                         #email="ngModel">
                     <div class="alert alert-danger" *ngIf="email.invalid && (email.dirty || email.touched)">
                         <div *ngIf="email.errors.required">
