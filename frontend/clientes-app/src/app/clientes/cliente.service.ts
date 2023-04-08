@@ -26,26 +26,22 @@ export class ClienteService {
     );
   }
 
-  create(cliente: Cliente): Observable<Cliente> {
-    return this.http.post(this.urlEndpoint, cliente, {headers: this.httpHeaders}).pipe(
-      map((response: any) => response.cliente as Cliente),
-      catchError(e => {
-        if (e.status == 400) {
-          return throwError(e);
-        }
-        console.error(e.error.mensaje);
-        swal(e.error.mensaje, e.error.error, 'error');
-        return throwError(e);
-      })
-    );
-  }
-
   getCliente(id: number): Observable<Cliente> {
     return this.http.get<Cliente>(`${this.urlEndpoint}/${id}`).pipe(
       catchError(e => {
         this.router.navigate(['/clientes']);
         console.error(e.error.mensaje);
         swal('Error al editar cliente', e.error.mensaje, 'error');
+        return throwError(e);
+      })
+    );
+  }
+
+  create(cliente: Cliente): Observable<any> {
+    return this.http.post<any>(this.urlEndpoint, cliente, {headers: this.httpHeaders}).pipe(
+      catchError(e => {
+        console.error(e.error.mensaje);
+        swal(e.error.mensaje, e.error.error, 'error');
         return throwError(e);
       })
     );
@@ -74,8 +70,8 @@ export class ClienteService {
     );
   }
 
-  /*create(cliente: Cliente): Observable<any> {
-    return this.http.post<any>(this.urlEndpoint, cliente, {headers: this.httpHeaders}).pipe(
+  /*create(cliente: Cliente): Observable<Cliente> {
+    return this.http.post<Cliente>(this.urlEndpoint, cliente, {headers: this.httpHeaders}).pipe(
       catchError(e => {
         console.error(e.error.mensaje);
         swal(e.error.mensaje, e.error.error, 'error');
@@ -85,8 +81,12 @@ export class ClienteService {
   }*/
 
   /*create(cliente: Cliente): Observable<Cliente> {
-    return this.http.post<Cliente>(this.urlEndpoint, cliente, {headers: this.httpHeaders}).pipe(
+    return this.http.post(this.urlEndpoint, cliente, {headers: this.httpHeaders}).pipe(
+      map((response: any) => response.cliente as Cliente),
       catchError(e => {
+        if (e.status == 400) {
+          return throwError(e);
+        }
         console.error(e.error.mensaje);
         swal(e.error.mensaje, e.error.error, 'error');
         return throwError(e);
