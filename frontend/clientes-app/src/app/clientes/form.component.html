@@ -1,32 +1,89 @@
 <div class="card bg-dark text-white">
     <div class="card-header">{{ titulo }}</div>
     <div class="card-body">
-        <form>
+        <!-- Asignamos una variable para validar que el formulario sea valido -->
+        <form #clienteForm="ngForm">
             <div class="form-group row">
                 <label for="nombre" class="col-form-label col-sm-2">Nombre</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" [(ngModel)]="cliente.nombre" name="nombre">
+                    <!-- Asignamos la variable #nombre, ngModel tiene los mensajes de error y hacemos referencia a ella en el ngIf -->
+                    <input 
+                        type="text" 
+                        class="form-control" 
+                        [(ngModel)]="cliente.nombre" 
+                        name="nombre" 
+                        required 
+                        minlength="4" 
+                        #nombre="ngModel">
+                    <!-- dirty significa que muestra el error mientras escribimos hasta que el data sea valido y touched maneja el 
+                    foco del campo al salirse de el -->
+                    <div class="alert alert-danger" *ngIf="nombre.invalid && (nombre.dirty || nombre.touched)">
+                        <div *ngIf="nombre.errors.required">
+                            El campo Nombre es requerido
+                        </div>
+                        <div *ngIf="nombre.errors.minlength">
+                            El campo Nombre debe tener al menos 4 caracteres
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="form-group row">
                 <label for="apellido" class="col-form-label col-sm-2">Apellido</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" [(ngModel)]="cliente.apellido" name="apellido">
+                    <input 
+                        type="text" 
+                        class="form-control" 
+                        [(ngModel)]="cliente.apellido" 
+                        name="apellido" 
+                        required 
+                        #apellido="ngModel">
+                    <div class="alert alert-danger" *ngIf="apellido.invalid && (apellido.dirty || apellido.touched)">
+                        <div *ngIf="apellido.errors.required">
+                            El campo Apellido es requerido
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="form-group row">
                 <label for="email" class="col-form-label col-sm-2">Email</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" [(ngModel)]="cliente.email" name="email">
+                    <input 
+                        type="text" 
+                        class="form-control" 
+                        [(ngModel)]="cliente.email" 
+                        name="email" 
+                        required 
+                        email
+                        #email="ngModel">
+                    <div class="alert alert-danger" *ngIf="email.invalid && (email.dirty || email.touched)">
+                        <div *ngIf="email.errors.required">
+                            El campo Email es requerido
+                        </div>
+                        <div *ngIf="email.errors.email">
+                            El campo Email debe tener un formato válido
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="form-group row">
                 <div class="col-sm-6">
-                    <button class="btn btn-primary" role="button" (click)="create()" *ngIf="!cliente.id else mostrarBtnEditar">
+                    <!-- Mantenmos el boton deshabilitado hasta que el formulario sea valido -->
+                    <button 
+                        class="btn btn-primary" 
+                        role="button" 
+                        (click)="create()" 
+                        *ngIf="!cliente.id else mostrarBtnEditar"
+                        [disabled]="!clienteForm.form.valid">
                         Crear
                     </button>
                     <ng-template #mostrarBtnEditar>
-                        <button class="btn btn-primary" role="button" (click)="update()">Editar</button>
+                        <button 
+                            class="btn btn-primary" 
+                            role="button" 
+                            (click)="update()" 
+                            [disabled]="!clienteForm.form.valid">
+                            Editar
+                        </button>
                     </ng-template>
                 </div>
             </div>
