@@ -1,6 +1,7 @@
 package com.clientes.api.service.impl;
 
 import com.clientes.api.domain.Cliente;
+import com.clientes.api.exeception.CustomNotFoundException;
 import com.clientes.api.repository.ClienteRepository;
 import com.clientes.api.service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
+
+import static com.clientes.api.exeception.CustomExceptionMapper.APPLICATION_EXCEPTIONS;
+import static com.clientes.api.exeception.ExceptionConstants.CLIENT_NOT_FOUND_EXCEPTION;
 
 @Service
 public class ClienteServiceImpl implements ClienteService {
@@ -28,8 +31,9 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Override
     @Transactional(readOnly = true)
-    public Cliente findById(Long id) {
-        return clienteRepository.findById(id).orElse(null);
+    public Cliente findById(Long id)  {
+        return clienteRepository.findById(id)
+                .orElseThrow(() -> new CustomNotFoundException(buildCustomerNotFoundErrorMessage(id)));
     }
 
     @Override
@@ -39,31 +43,37 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     @Override
+    @Transactional
     public Cliente saveOrUpdate(Cliente cliente) {
+        Cliente clienteActualizado;
         if (cliente.getId() == null) {
             return clienteRepository.save(cliente);
         } else {
-            Optional<Cliente> clienteOptional = clienteRepository.findById(cliente.getId());
-            if (clienteOptional.isPresent()) {
-                Cliente clienteActual = clienteOptional.get();
+            clienteActualizado = clienteRepository.findById(cliente.getId()).map(clienteActual -> {
                 clienteActual.setNombre(cliente.getNombre());
                 clienteActual.setApellido(cliente.getApellido());
                 clienteActual.setEmail(cliente.getEmail());
                 clienteRepository.save(clienteActual);
                 return clienteActual;
-            }
+            }).orElseThrow(() -> new CustomNotFoundException(buildCustomerNotFoundErrorMessage(cliente.getId())));
         }
-        return null;
+        return clienteActualizado;
     }
 
     @Override
+    @Transactional
     public boolean delete(Long id) {
-        Optional<Cliente> clienteOptional = clienteRepository.findById(id);
-        if (clienteOptional.isPresent()) {
-            clienteRepository.deleteById(id);
-            return true;
-        }
-        return false;
+        clienteRepository.findById(id).map(clienteActual -> {
+            clienteRepository.deleteById(clienteActual.getId());
+            return clienteActual;
+        }).orElseThrow(() -> new CustomNotFoundException(buildCustomerNotFoundErrorMessage(id)));
+        return true;
+    }
+
+    private String buildCustomerNotFoundErrorMessage(Long id) {
+        return APPLICATION_EXCEPTIONS
+                .get(CLIENT_NOT_FOUND_EXCEPTION)
+                .replace("${first}", String.valueOf(id));
     }
 
 }
