@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Cliente } from './cliente';
 import { ClienteService } from './cliente.service';
 import swal from 'sweetalert2';
+import { tap } from 'rxjs';
 
 @Component({
   selector: 'app-clientes',
@@ -16,8 +17,21 @@ export class ClientesComponent implements OnInit {
 
   }
 
+  /* 
+      Aqui el tap ya viene con data transformada por el map.
+      El subscribe podria ser vacio y la asignacion a clientes se podria hacer en el tap.
+
+      tap(clientes => this.clientes = clientes).subscribe()
+  */
   ngOnInit(): void {
-    this.clienteService.getClientes().subscribe(
+    this.clienteService.getClientes().pipe(
+      tap(clientes => {
+        console.log('ClientesComponent: tap 3');
+        clientes.forEach(cliente => {
+          console.log(cliente.nombre);
+        });
+      })
+    ).subscribe(
       clientes => this.clientes = clientes
     )
   }

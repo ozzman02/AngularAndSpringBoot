@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { catchError, map, of, throwError } from 'rxjs';
+import { catchError, map, of, tap, throwError } from 'rxjs';
 import { Observable } from 'rxjs';
 import { Cliente } from './cliente';
 //import { CLIENTES } from './clientes.json';
@@ -39,9 +39,22 @@ export class ClienteService {
       Habilitar LOCALE_ID para que funcione aun mas global en app.module. 
       Tambien iene efecto en los templates.
 
+      Tap y Map
+
+        El tap no transforma los datos el map si. En este ejemplo el segundo tap ya utiliza data que
+        fue transformada por el map. El map transforma la respuesta para devolver un listado de tipo Cliente.
+        El operador tap es void.
+
   */
   getClientes(): Observable<Cliente[]> {
     return this.http.get<Cliente[]>(this.urlEndpoint).pipe(
+      tap(response => {
+        let clientes = response as Cliente[];
+        console.log('ClienteService: tap 1');
+        clientes.forEach(cliente => {
+          console.log(cliente.nombre);
+        })
+      }),
       map(response => {
         let clientes = response as Cliente[];
         return clientes.map(cliente => {
@@ -50,7 +63,13 @@ export class ClienteService {
           //cliente.createAt = datePipe.transform(cliente.createAt, 'EEEE dd, MMMM yyyy');
           return cliente;
         })
-      })
+      }),
+      tap(response => {
+        console.log('ClienteService: tap 2');
+        response.forEach(cliente => {
+          console.log(cliente.nombre);
+        })
+      }),
     );
   }
 
