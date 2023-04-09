@@ -6,6 +6,7 @@ import { Cliente } from './cliente';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import swal from 'sweetalert2';
 import { Router } from '@angular/router';
+import { DatePipe } from '@angular/common';
 
 @Injectable()
 export class ClienteService {
@@ -18,11 +19,38 @@ export class ClienteService {
 
   constructor(private http: HttpClient, private router: Router) { }
 
+  /*
+      Implementacion inicial
+        
+        return of(CLIENTES);
+        return this.http.get<Cliente[]>(this.urlEndpoint);
+
+      Date pipes formatDate:
+      
+        cliente.createAt = formatDate(cliente.createAt, 'dd-MM-yyyy', 'en-US');
+
+      Date pipes: registerLocaleData:
+        
+        registerLocaleData(localeES, 'es')
+        let datePipe = new DatePipe('es');
+        cliente.createAt = datePipe.transform(cliente.createAt, 'dd/MM/yyyy');
+        cliente.createAt = datePipe.transform(cliente.createAt, 'fullDate');
+
+      Habilitar LOCALE_ID para que funcione aun mas global en app.module. 
+      Tambien iene efecto en los templates.
+
+  */
   getClientes(): Observable<Cliente[]> {
-    //return of(CLIENTES);
-    //return this.http.get<Cliente[]>(this.urlEndpoint);
     return this.http.get<Cliente[]>(this.urlEndpoint).pipe(
-      map(response => response as Cliente[])
+      map(response => {
+        let clientes = response as Cliente[];
+        return clientes.map(cliente => {
+          cliente.nombre = cliente.nombre.toUpperCase();
+          //let datePipe = new DatePipe('es');
+          //cliente.createAt = datePipe.transform(cliente.createAt, 'EEEE dd, MMMM yyyy');
+          return cliente;
+        })
+      })
     );
   }
 
