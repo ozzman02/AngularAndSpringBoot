@@ -5,8 +5,11 @@ import com.clientes.api.exeception.CustomNotFoundException;
 import com.clientes.api.repository.ClienteRepository;
 import com.clientes.api.service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.List;
 
@@ -28,6 +31,10 @@ public class ClienteServiceImpl implements ClienteService {
     public List<Cliente> findAll() {
         return (List<Cliente>) clienteRepository.findAll();
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Cliente> findAll(Pageable pageable) { return clienteRepository.findAll(pageable); }
 
     @Override
     @Transactional(readOnly = true)
@@ -71,8 +78,7 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     private String buildCustomerNotFoundErrorMessage(Long id) {
-        return APPLICATION_EXCEPTIONS
-                .get(CLIENT_NOT_FOUND_EXCEPTION)
+        return APPLICATION_EXCEPTIONS.get(CLIENT_NOT_FOUND_EXCEPTION)
                 .replace("${first}", String.valueOf(id));
     }
 
