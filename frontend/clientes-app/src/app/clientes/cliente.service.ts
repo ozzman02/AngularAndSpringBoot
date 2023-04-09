@@ -46,7 +46,7 @@ export class ClienteService {
         El operador tap es void.
 
   */
-  getClientes(): Observable<Cliente[]> {
+  /*getClientes(): Observable<Cliente[]> {
     return this.http.get<Cliente[]>(this.urlEndpoint).pipe(
       tap(response => {
         let clientes = response as Cliente[];
@@ -70,6 +70,30 @@ export class ClienteService {
           console.log(cliente.nombre);
         })
       }),
+    );
+  }*/
+
+  getClientes(page: number): Observable<any[]> {
+    return this.http.get<Cliente[]>(this.urlEndpoint + '/page/' + page).pipe(
+      tap( (response: any) => {
+        console.log('ClienteService: tap 1');
+        (response.content as Cliente[]).forEach(cliente => {
+          console.log(cliente.nombre);
+        })
+      }),
+      map( (response: any) => {
+        (response.content as Cliente[]).map(cliente => {
+          cliente.nombre = cliente.nombre.toUpperCase();
+          return cliente;
+        });
+        return response;
+      }),
+      tap(response => {
+        console.log('ClienteService: tap 2');
+        (response.content as Cliente[]).forEach(cliente => {
+          console.log(cliente.nombre);
+        });
+      })
     );
   }
 

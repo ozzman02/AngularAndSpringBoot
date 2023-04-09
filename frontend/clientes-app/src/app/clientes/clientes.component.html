@@ -40,5 +40,10 @@
                 </tr>
             </tbody>
         </table>
+        <!--
+            clientes.component es el componente padre y paginator.component es el hijo 
+            El atributo entre [paginador] corresponde al hijo y en la clase padre usamos el atributo que vamos a injectar en el hijo.
+        -->
+        <app-paginator *ngIf="paginador" [paginador] = "paginador"></app-paginator>
     </div>
 </div>

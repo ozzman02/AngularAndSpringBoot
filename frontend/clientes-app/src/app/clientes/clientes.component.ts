@@ -3,6 +3,7 @@ import { Cliente } from './cliente';
 import { ClienteService } from './cliente.service';
 import swal from 'sweetalert2';
 import { tap } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-clientes',
@@ -13,9 +14,9 @@ export class ClientesComponent implements OnInit {
   
   clientes: Cliente[];
 
-  constructor(private clienteService: ClienteService) {
+  paginador: any;
 
-  }
+  constructor(private clienteService: ClienteService, private activatedRoute: ActivatedRoute) {}
 
   /* 
       Aqui el tap ya viene con data transformada por el map.
@@ -24,16 +25,26 @@ export class ClientesComponent implements OnInit {
       tap(clientes => this.clientes = clientes).subscribe()
   */
   ngOnInit(): void {
-    this.clienteService.getClientes().pipe(
-      tap(clientes => {
-        console.log('ClientesComponent: tap 3');
-        clientes.forEach(cliente => {
-          console.log(cliente.nombre);
+    /* Necesitamos un observable para la pagina */
+    this.activatedRoute.paramMap.subscribe(params => {
+      /* params.get('page') es string, convertimos a number con el + */
+      let page: number = +params.get('page');
+      if (!page) {
+        page = 0; 
+      }
+      this.clienteService.getClientes(page).pipe(
+        tap((response: any) => {
+          console.log('ClientesComponent: tap 3');
+          (response.content as Cliente[]).forEach(cliente => {
+            console.log(cliente.nombre);
+          });
+        })
+      ).subscribe(
+        response => {
+          this.clientes = response.content as Cliente[];
+          this.paginador = response;
         });
-      })
-    ).subscribe(
-      clientes => this.clientes = clientes
-    )
+    });
   }
 
   public delete(cliente: Cliente): void {
