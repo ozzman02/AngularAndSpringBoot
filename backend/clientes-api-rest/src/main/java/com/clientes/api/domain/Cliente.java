@@ -3,6 +3,7 @@ package com.clientes.api.domain;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.io.Serializable;
@@ -32,14 +33,17 @@ public class Cliente implements Serializable {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(name = "create_at", updatable = false)
+    @NotNull(message = "no puede estar vacío")
+    @Column(name = "create_at")
     @Temporal(TemporalType.DATE)
     private Date createAt;
 
+    /*
+        Vamos a incluir un datepicker en el frontend
     @PrePersist
     public void prePersist() {
         createAt = new Date();
-    }
+    }*/
 
     public Long getId() {
         return id;
