@@ -60,6 +60,7 @@ public class ClienteServiceImpl implements ClienteService {
                 clienteActual.setNombre(cliente.getNombre());
                 clienteActual.setApellido(cliente.getApellido());
                 clienteActual.setEmail(cliente.getEmail());
+                clienteActual.setCreateAt(cliente.getCreateAt());
                 clienteRepository.save(clienteActual);
                 return clienteActual;
             }).orElseThrow(() -> new CustomNotFoundException(buildCustomerNotFoundErrorMessage(cliente.getId())));
