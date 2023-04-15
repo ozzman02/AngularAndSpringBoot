@@ -1,20 +1,31 @@
 package com.clientes.api.service.impl;
 
 import com.clientes.api.domain.Cliente;
-import com.clientes.api.exeception.CustomNotFoundException;
+import com.clientes.api.exeception.ApplicationException;
 import com.clientes.api.repository.ClienteRepository;
 import com.clientes.api.service.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
-import static com.clientes.api.exeception.CustomExceptionMapper.APPLICATION_EXCEPTIONS;
-import static com.clientes.api.exeception.ExceptionConstants.CLIENT_NOT_FOUND_EXCEPTION;
+import static com.clientes.api.constants.ApplicationConstants.*;
 
 @Service
 public class ClienteServiceImpl implements ClienteService {
@@ -29,7 +40,7 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     @Transactional(readOnly = true)
     public List<Cliente> findAll() {
-        return (List<Cliente>) clienteRepository.findAll();
+        return clienteRepository.findAll();
     }
 
     @Override
@@ -40,7 +51,10 @@ public class ClienteServiceImpl implements ClienteService {
     @Transactional(readOnly = true)
     public Cliente findById(Long id)  {
         return clienteRepository.findById(id)
-                .orElseThrow(() -> new CustomNotFoundException(buildCustomerNotFoundErrorMessage(id)));
+                .orElseThrow(() -> new ApplicationException(CLIENT_NOT_FOUND_EXCEPTION,
+                        buildErrorMessage(CLIENT_NOT_FOUND_ERROR_MESSAGE, String.valueOf(id)),
+                        HttpStatus.NOT_FOUND)
+                );
     }
 
     @Override
@@ -63,7 +77,10 @@ public class ClienteServiceImpl implements ClienteService {
                 clienteActual.setCreateAt(cliente.getCreateAt());
                 clienteRepository.save(clienteActual);
                 return clienteActual;
-            }).orElseThrow(() -> new CustomNotFoundException(buildCustomerNotFoundErrorMessage(cliente.getId())));
+            }).orElseThrow(() -> new ApplicationException(CLIENT_NOT_FOUND_EXCEPTION,
+                    buildErrorMessage(CLIENT_NOT_FOUND_ERROR_MESSAGE, String.valueOf(cliente.getId())),
+                    HttpStatus.NOT_FOUND)
+            );
         }
         return clienteActualizado;
     }
@@ -72,15 +89,90 @@ public class ClienteServiceImpl implements ClienteService {
     @Transactional
     public boolean delete(Long id) {
         clienteRepository.findById(id).map(clienteActual -> {
+            deleteExistingProfilePhoto(clienteActual);
             clienteRepository.deleteById(clienteActual.getId());
             return clienteActual;
-        }).orElseThrow(() -> new CustomNotFoundException(buildCustomerNotFoundErrorMessage(id)));
+        }).orElseThrow(() -> new ApplicationException(CLIENT_NOT_FOUND_EXCEPTION,
+                buildErrorMessage(CLIENT_NOT_FOUND_ERROR_MESSAGE, String.valueOf(id)),
+                HttpStatus.NOT_FOUND)
+        );
         return true;
     }
 
-    private String buildCustomerNotFoundErrorMessage(Long id) {
-        return APPLICATION_EXCEPTIONS.get(CLIENT_NOT_FOUND_EXCEPTION)
-                .replace("${first}", String.valueOf(id));
+    @Override
+    public Map<String, Object> uploadPicture(MultipartFile file, Long id) {
+        Map<String, Object> response = new HashMap<>();
+        Cliente cliente = clienteRepository.findById(id)
+                .orElseThrow(() -> new ApplicationException(CLIENT_NOT_FOUND_EXCEPTION,
+                        buildErrorMessage(CLIENT_NOT_FOUND_ERROR_MESSAGE, String.valueOf(id)),
+                        HttpStatus.NOT_FOUND)
+                );
+        if (!file.isEmpty() && file.getOriginalFilename() != null) {
+            String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename().trim();
+            Path filePath = UPLOADS_DIRECTORY.resolve(fileName).toAbsolutePath();
+            try {
+                Files.copy(file.getInputStream(), filePath);
+            } catch (IOException e) {
+                throw new ApplicationException(FILE_UPLOAD_EXCEPTION,
+                        buildErrorMessage(FILE_UPLOAD_EXCEPTION_ERROR_MESSAGE, fileName),
+                        HttpStatus.INTERNAL_SERVER_ERROR
+                );
+            }
+            deleteExistingProfilePhoto(cliente);
+            cliente.setFoto(fileName);
+            clienteRepository.save(cliente);
+            response.put("cliente", cliente);
+            response.put("mensaje", "La imagen se ha subido correctamente " + fileName);
+        } else {
+            throw new ApplicationException(EMPTY_PROFILE_PHOTO_EXCEPTION,
+                    EMPTY_PROFILE_PHOTO_EXCEPTION_ERROR_MESSAGE, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return response;
+    }
+
+    @Override
+    public Resource downloadProfilePhoto(String nombreFoto) {
+        Path filePath = UPLOADS_DIRECTORY.resolve(nombreFoto).toAbsolutePath();
+        Resource resource;
+        try {
+            resource = new UrlResource(filePath.toUri());
+        } catch (MalformedURLException e) {
+            throw new ApplicationException(MALFORMED_URL_EXCEPTION, MALFORMED_URL_EXCEPTION_ERROR_MESSAGE,
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        if (!resource.exists() && !resource.isReadable()) {
+            throw new ApplicationException(PROFILE_PHOTO_NOT_READABLE_EXCEPTION,
+                    buildErrorMessage(PROFILE_PHOTO_NOT_READABLE_EXCEPTION_ERROR_MESSAGE, nombreFoto),
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return resource;
+    }
+
+    @Override
+    public HttpHeaders createContentDispositionHeaders(Resource resource) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"");
+        return headers;
+    }
+
+    private void deleteExistingProfilePhoto(Cliente cliente) {
+        String nombreFotoAnterior = cliente.getFoto();
+        if (nombreFotoAnterior != null && !nombreFotoAnterior.isBlank()) {
+            Path rutaFotoAnterior = UPLOADS_DIRECTORY.resolve(nombreFotoAnterior).toAbsolutePath();
+            File archivoFotoAnterior = rutaFotoAnterior.toFile();
+            if (archivoFotoAnterior.exists() && archivoFotoAnterior.canRead()) {
+                archivoFotoAnterior.delete();
+            } else {
+                throw new ApplicationException(DELETE_PROFILE_PHOTO_EXCEPTION,
+                        buildErrorMessage(DELETE_PROFILE_PHOTO_EXCEPTION_ERROR_MESSAGE, nombreFotoAnterior),
+                        HttpStatus.INTERNAL_SERVER_ERROR
+                );
+            }
+        }
+    }
+
+    private String buildErrorMessage(String errorMessage, String argument) {
+        return errorMessage.replace("${first}", argument);
     }
 
 }

@@ -12,8 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.clientes.api.exeception.CustomExceptionMapper.APPLICATION_EXCEPTIONS;
-import static com.clientes.api.exeception.ExceptionConstants.*;
+import static com.clientes.api.constants.ApplicationConstants.*;
 
 @ControllerAdvice
 public class RestExceptionHandler {
@@ -21,16 +20,10 @@ public class RestExceptionHandler {
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<?> dataAccessExceptionHandler(DataAccessException ex) {
         Map<String, Object> response = new HashMap<>();
-        response.put(MENSAJE, APPLICATION_EXCEPTIONS.get(DATA_ACCESS_EXCEPTION));
-        response.put(ERROR, ex.getMessage().concat(": ").concat(ex.getMostSpecificCause().getMessage()));
+        response.put(MENSAJE, DATA_ACCESS_EXCEPTION);
+        response.put(ERROR, DATA_ACCESS_EXCEPTION_ERROR_MESSAGE);
+        response.put(CAUSE, ex.getMessage().concat(": ").concat(ex.getMostSpecificCause().getMessage()));
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    @ExceptionHandler(CustomNotFoundException.class)
-    public ResponseEntity<?> customNotFoundExceptionHandler(CustomNotFoundException ex) {
-        Map<String, Object> response = new HashMap<>();
-        response.put(MENSAJE, ex.getMessage());
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -41,6 +34,14 @@ public class RestExceptionHandler {
                 .collect(Collectors.toList());
         response.put(ERRORS, errors);
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ApplicationException.class)
+    public ResponseEntity<?> applicationExceptionHandler(ApplicationException ex) {
+        Map<String, Object> response = new HashMap<>();
+        response.put(MENSAJE, ex.getMessageCategory());
+        response.put(ERROR, ex.getMessage());
+        return new ResponseEntity<>(response, ex.getHttpStatus());
     }
 
 }

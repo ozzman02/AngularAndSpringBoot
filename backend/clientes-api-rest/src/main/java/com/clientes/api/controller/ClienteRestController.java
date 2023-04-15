@@ -3,12 +3,17 @@ package com.clientes.api.controller;
 import com.clientes.api.domain.Cliente;
 import com.clientes.api.service.ClienteService;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -18,6 +23,8 @@ import java.util.List;
 public class ClienteRestController {
 
     private final ClienteService clienteService;
+
+    private final Logger log = LoggerFactory.getLogger(ClienteRestController.class);
 
     @Autowired
     public ClienteRestController(ClienteService clienteService) {
@@ -52,6 +59,18 @@ public class ClienteRestController {
     @DeleteMapping("/clientes/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         return new ResponseEntity<>(clienteService.delete(id), HttpStatus.OK);
+    }
+
+    @PostMapping("/clientes/upload")
+    public ResponseEntity<?> uploadProfilePhoto(@RequestParam("file") MultipartFile file, @RequestParam("id") Long id) {
+        return new ResponseEntity<>(clienteService.uploadPicture(file, id), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/clientes/uploads/img/{nombreFoto:.+}")
+    public ResponseEntity<Resource> downloadProfilePhoto(@PathVariable String nombreFoto) {
+        Resource resource = clienteService.downloadProfilePhoto(nombreFoto);
+        HttpHeaders headers = clienteService.createContentDispositionHeaders(resource);
+        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
 
 }
