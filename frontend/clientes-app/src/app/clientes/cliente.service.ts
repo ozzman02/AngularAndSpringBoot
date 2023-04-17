@@ -3,7 +3,7 @@ import { catchError, map, of, tap, throwError } from 'rxjs';
 import { Observable } from 'rxjs';
 import { Cliente } from './cliente';
 //import { CLIENTES } from './clientes.json';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpHeaders, HttpRequest } from '@angular/common/http';
 import swal from 'sweetalert2';
 import { Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
@@ -140,6 +140,31 @@ export class ClienteService {
       })
     );
   }
+
+  /* con barra de progreso */
+  subirFoto(file: File, id: any): Observable<HttpEvent<{}>> {
+    let formData = new FormData();
+    formData.append("file", file);
+    formData.append("id", id);
+    const req = new HttpRequest('POST', `${this.urlEndpoint}/upload`, formData, {
+      reportProgress: true
+    });
+    return this.http.request(req);
+  }
+
+  /*subirFoto(file: File, id: any): Observable<Cliente> {
+    let formData = new FormData();
+    formData.append("file", file);
+    formData.append("id", id);
+    return this.http.post(`${this.urlEndpoint}/upload`, formData).pipe(
+      map( (response: any) => response.cliente as Cliente),
+      catchError(e => {
+        console.error(e.error.mensaje);
+        swal(e.error.mensaje, e.error.error, 'error');
+        return throwError(e);
+      })
+    );
+  }*/
 
   /*create(cliente: Cliente): Observable<Cliente> {
     return this.http.post<Cliente>(this.urlEndpoint, cliente, {headers: this.httpHeaders}).pipe(
