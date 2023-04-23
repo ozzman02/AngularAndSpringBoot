@@ -51,6 +51,15 @@ export class ClientesComponent implements OnInit {
           this.paginador = response;
         });
     });
+    // nos subscribimos al event emitter
+    this.modalService.notificarUpload.subscribe(cliente => {
+      this.clientes = this.clientes.map(clienteOriginal => {
+        if (cliente.id == clienteOriginal.id) {
+          clienteOriginal.foto = cliente.foto;
+        }
+        return clienteOriginal;
+      })
+    })
   }
 
   public delete(cliente: Cliente): void {
