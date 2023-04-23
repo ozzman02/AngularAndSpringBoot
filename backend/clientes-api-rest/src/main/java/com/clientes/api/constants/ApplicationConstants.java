@@ -6,6 +6,8 @@ import java.nio.file.Paths;
 public class ApplicationConstants {
 
     public static final Path UPLOADS_DIRECTORY = Paths.get("uploads");
+    public static final Path IMAGES_DIRECTORY = Paths.get("src/main/resources/static/images");
+    public static final String NO_USER_ICON_IMAGE_NAME = "no_user_icon.png";
 
     public static final String MENSAJE = "mensaje";
     public static final String ERROR = "error";

@@ -2,6 +2,7 @@ package com.clientes.api.controller;
 
 import com.clientes.api.domain.Cliente;
 import com.clientes.api.service.ClienteService;
+import com.clientes.api.service.FileUploadService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,11 +25,14 @@ public class ClienteRestController {
 
     private final ClienteService clienteService;
 
+    private final FileUploadService fileUploadService;
+
     private final Logger log = LoggerFactory.getLogger(ClienteRestController.class);
 
     @Autowired
-    public ClienteRestController(ClienteService clienteService) {
+    public ClienteRestController(ClienteService clienteService, FileUploadService fileUploadService) {
         this.clienteService = clienteService;
+        this.fileUploadService = fileUploadService;
     }
 
     @GetMapping("/clientes")
@@ -63,13 +67,13 @@ public class ClienteRestController {
 
     @PostMapping("/clientes/upload")
     public ResponseEntity<?> uploadProfilePhoto(@RequestParam("file") MultipartFile file, @RequestParam("id") Long id) {
-        return new ResponseEntity<>(clienteService.uploadPicture(file, id), HttpStatus.CREATED);
+        return new ResponseEntity<>(fileUploadService.uploadPicture(file, id), HttpStatus.CREATED);
     }
 
     @GetMapping("/clientes/uploads/img/{nombreFoto:.+}")
     public ResponseEntity<Resource> downloadProfilePhoto(@PathVariable String nombreFoto) {
-        Resource resource = clienteService.downloadProfilePhoto(nombreFoto);
-        HttpHeaders headers = clienteService.createContentDispositionHeaders(resource);
+        Resource resource = fileUploadService.downloadProfilePhoto(nombreFoto);
+        HttpHeaders headers = fileUploadService.createContentDispositionHeaders(resource);
         return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
 
