@@ -9,6 +9,8 @@ public class ApplicationConstants {
     public static final Path IMAGES_DIRECTORY = Paths.get("src/main/resources/static/images");
     public static final String NO_USER_ICON_IMAGE_NAME = "no_user_icon.png";
 
+    public static final int PAGE_SIZE = 4;
+
     public static final String MENSAJE = "mensaje";
     public static final String ERROR = "error";
     public static final String ERRORS = "errors";

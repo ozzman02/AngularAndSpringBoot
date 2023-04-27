@@ -1,11 +1,13 @@
 package com.clientes.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -13,6 +15,7 @@ import java.util.Date;
 @Table(name = "clientes")
 public class Cliente implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 7218176041440737996L;
 
     @Id
@@ -38,8 +41,14 @@ public class Cliente implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date createAt;
 
-
     private String foto;
+
+    @NotNull(message = "la región no puede estar vacía")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "region_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Region region;
+
     /*
         Vamos a incluir un datepicker en el frontend
     @PrePersist
@@ -93,5 +102,13 @@ public class Cliente implements Serializable {
 
     public void setFoto(String foto) {
         this.foto = foto;
+    }
+
+    public Region getRegion() {
+        return region;
+    }
+
+    public void setRegion(Region region) {
+        this.region = region;
     }
 }

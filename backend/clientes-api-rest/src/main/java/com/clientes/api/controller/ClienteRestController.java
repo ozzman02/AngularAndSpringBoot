@@ -1,6 +1,7 @@
 package com.clientes.api.controller;
 
 import com.clientes.api.domain.Cliente;
+import com.clientes.api.domain.Region;
 import com.clientes.api.service.ClienteService;
 import com.clientes.api.service.FileUploadService;
 import jakarta.validation.Valid;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+
+import static com.clientes.api.constants.ApplicationConstants.PAGE_SIZE;
 
 @CrossOrigin(origins = {"http://localhost:4200"})
 @RestController
@@ -42,7 +45,7 @@ public class ClienteRestController {
 
     @GetMapping("/clientes/page/{page}")
     public Page<Cliente> index(@PathVariable Integer page) {
-        return clienteService.findAll(PageRequest.of(page, 4));
+        return clienteService.findAll(PageRequest.of(page, PAGE_SIZE));
     }
 
     @GetMapping("/clientes/{id}")
@@ -75,6 +78,11 @@ public class ClienteRestController {
         Resource resource = fileUploadService.downloadProfilePhoto(nombreFoto);
         HttpHeaders headers = fileUploadService.createContentDispositionHeaders(resource);
         return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/clientes/regiones")
+    public List<Region> listarRegiones() {
+        return clienteService.findAllRegions();
     }
 
 }

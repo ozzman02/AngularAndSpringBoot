@@ -1,6 +1,7 @@
 package com.clientes.api.service.impl;
 
 import com.clientes.api.domain.Cliente;
+import com.clientes.api.domain.Region;
 import com.clientes.api.exeception.ApplicationException;
 import com.clientes.api.repository.ClienteRepository;
 import com.clientes.api.service.ClienteService;
@@ -73,6 +74,7 @@ public class ClienteServiceImpl implements ClienteService {
                 clienteActual.setApellido(cliente.getApellido());
                 clienteActual.setEmail(cliente.getEmail());
                 clienteActual.setCreateAt(cliente.getCreateAt());
+                clienteActual.setRegion(cliente.getRegion());
                 clienteRepository.save(clienteActual);
                 return clienteActual;
             }).orElseThrow(() -> new ApplicationException(CLIENT_NOT_FOUND_EXCEPTION,
@@ -95,6 +97,12 @@ public class ClienteServiceImpl implements ClienteService {
                 HttpStatus.NOT_FOUND)
         );
         return true;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Region> findAllRegions() {
+        return clienteRepository.findAllRegions();
     }
 
 }
