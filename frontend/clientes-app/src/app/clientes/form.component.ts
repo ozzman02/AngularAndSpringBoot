@@ -3,6 +3,7 @@ import { Cliente } from './cliente';
 import { ClienteService } from './cliente.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import swal from 'sweetalert2';
+import { Region } from './region';
 
 @Component({
   selector: 'app-form',
@@ -11,14 +12,16 @@ import swal from 'sweetalert2';
 })
 export class FormComponent implements OnInit {
 
-  public titulo: string = "Crear Cliente"
+  public titulo: string = "Crear Cliente";
   public cliente: Cliente = new Cliente();
   public errores: string[];
+  public regiones: Region[];
   
   constructor(private clienteService: ClienteService, private router: Router, private activatedRoute: ActivatedRoute) {}
 
   ngOnInit(): void {
     this.cargarCliente();
+    this.cargarRegiones();
   }
 
   private cargarCliente(): void {
@@ -32,6 +35,10 @@ export class FormComponent implements OnInit {
     })
   }
 
+  private cargarRegiones(): void {
+    this.clienteService.getRegiones().subscribe(regiones => this.regiones = regiones);
+  }
+  
   public create(): void {
     this.clienteService.create(this.cliente)
       .subscribe(
@@ -61,6 +68,13 @@ export class FormComponent implements OnInit {
           console.error(err.error.errors);
         }
       )
+  }
+
+  compararRegion(o1: Region, o2: Region): boolean {
+    if (o1 === undefined && o2 === undefined) {
+      return true;
+    }
+    return o1 === null || o2 === null || o1 === undefined || o2 === undefined ? false : o1.id === o2.id;
   }
 
    /* El backend devuelve un map con mensajes */ 

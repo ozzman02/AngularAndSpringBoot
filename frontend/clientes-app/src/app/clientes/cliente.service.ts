@@ -7,6 +7,7 @@ import { HttpClient, HttpEvent, HttpHeaders, HttpRequest } from '@angular/common
 import swal from 'sweetalert2';
 import { Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
+import { Region } from './region';
 
 @Injectable()
 export class ClienteService {
@@ -150,6 +151,10 @@ export class ClienteService {
       reportProgress: true
     });
     return this.http.request(req);
+  }
+
+  getRegiones(): Observable<Region[]> {
+    return this.http.get<Region[]>(this.urlEndpoint + '/regiones');
   }
 
   /*subirFoto(file: File, id: any): Observable<Cliente> {
