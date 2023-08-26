@@ -1,11 +1,10 @@
 package com.clientes.api.domain;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-
+import javax.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
+import javax.validation.constraints.Email;
 
 @Entity
 @Table(name = "usuarios")

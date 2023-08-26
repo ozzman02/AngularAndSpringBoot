@@ -1,7 +1,6 @@
 package com.clientes.api.domain;
 
-import jakarta.persistence.*;
-
+import javax.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 

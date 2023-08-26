@@ -4,7 +4,6 @@ import com.clientes.api.domain.Cliente;
 import com.clientes.api.domain.Region;
 import com.clientes.api.service.ClienteService;
 import com.clientes.api.service.FileUploadService;
-import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +13,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.util.List;
 
-import static com.clientes.api.constants.ApplicationConstants.PAGE_SIZE;
+import static com.clientes.api.constants.ApplicationConstants.*;
 
 @CrossOrigin(origins = {"http://localhost:4200"})
 @RestController
@@ -48,26 +49,31 @@ public class ClienteRestController {
         return clienteService.findAll(PageRequest.of(page, PAGE_SIZE));
     }
 
+    @Secured({ROLE_USER, ROLE_ADMIN})
     @GetMapping("/clientes/{id}")
     public ResponseEntity<?> show(@PathVariable Long id) {
         return new ResponseEntity<>(clienteService.findById(id), HttpStatus.OK);
     }
 
+    @Secured(ROLE_ADMIN)
     @PostMapping("/clientes")
     public ResponseEntity<?> create(@Valid @RequestBody Cliente cliente) {
         return new ResponseEntity<>(clienteService.save(cliente), HttpStatus.OK);
     }
 
+    @Secured(ROLE_ADMIN)
     @PutMapping("/clientes")
     public ResponseEntity<?> update(@Valid @RequestBody Cliente cliente) {
         return new ResponseEntity<>(clienteService.saveOrUpdate(cliente), HttpStatus.CREATED);
     }
 
+    @Secured(ROLE_ADMIN)
     @DeleteMapping("/clientes/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         return new ResponseEntity<>(clienteService.delete(id), HttpStatus.OK);
     }
 
+    @Secured({ROLE_USER, ROLE_ADMIN})
     @PostMapping("/clientes/upload")
     public ResponseEntity<?> uploadProfilePhoto(@RequestParam("file") MultipartFile file, @RequestParam("id") Long id) {
         return new ResponseEntity<>(fileUploadService.uploadPicture(file, id), HttpStatus.CREATED);
@@ -80,6 +86,7 @@ public class ClienteRestController {
         return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
 
+    @Secured(ROLE_ADMIN)
     @GetMapping("/clientes/regiones")
     public List<Region> listarRegiones() {
         return clienteService.findAllRegions();

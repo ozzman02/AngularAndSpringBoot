@@ -37,4 +37,36 @@ public class ApplicationConstants {
     public static final String PROFILE_PHOTO_NOT_READABLE_EXCEPTION = "PROFILE_PHOTO_NOT_READABLE_EXCEPTION";
     public static final String PROFILE_PHOTO_NOT_READABLE_EXCEPTION_ERROR_MESSAGE = "La imagen ${first} no existe o no es legible";
 
+    public static final String TOKEN_KEY_ACCESS_PERMIT_ALL = "permitAll()";
+    public static final String CHECK_TOKEN_ACCESS_IS_AUTHENTICATED = "isAuthenticated()";
+
+    public static final String ANGULAR_CLIENT_NAME = "angularapp";
+    public static final String ANGULAR_CLIENT_PASSWORD = "12345";
+    public static final String SCOPE_READ = "read";
+    public static final String SCOPE_WRITE = "write";
+    public static final String PASSWORD_GRANT_TYPE = "password";
+    public static final String REFRESH_TOKEN_GRANT_TYPE = "refresh_token";
+    public static final int ACCESS_TOKEN_VALIDITY_SECONDS = 3600;
+    public static final int REFRESH_TOKEN_VALIDITY_SECONDS = 3600;
+
+    // Use these values when the prefix is not needed
+    public static final String USER_ROLE = "USER";
+    public static final String ADMIN_ROLE = "ADMIN";
+
+    // Use these values when the prefix is needed
+    public static final String ROLE_USER = "ROLE_USER";
+    public static final String ROLE_ADMIN = "ROLE_ADMIN";
+
+    public static final String[] PUBLIC_ENDPOINTS = {"/api/clientes", "/api/clientes/page/**", "/api/uploads/img/**", "/images/**"};
+    public static final String SHOW_CLIENT_ENDPOINT = "/api/clientes/{id}";
+    public static final String UPLOAD_CLIENT_ENDPOINT = "/api/clientes/upload";
+    public static final String CREATE_CLIENT_ENDPOINT = "/api/clientes";
+    public static final String PRIVATE_ENDPOINTS ="/api/clientes/**";
+
+    public static final String ANGULAR_APP_ALLOWED_ORIGIN = "http://localhost:4200";
+    public static final String[] ALLOWED_METHODS = {"GET", "POST", "PUT", "DELETE", "OPTIONS"};
+    public static final String[] ALLOWED_HEADERS = {"Content-Type", "Authorization"};
+
+
+
 }

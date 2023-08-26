@@ -1,9 +1,11 @@
 package com.clientes.api.domain;
 
-import jakarta.persistence.*;
-
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import java.io.Serial;
 import java.io.Serializable;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "roles")
