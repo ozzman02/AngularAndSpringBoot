@@ -18,6 +18,14 @@ export class ClienteService {
     'Content-Type': 'application/json'
   });
 
+  private isNoAutorizado(e): boolean {
+    if (e.status == 401 || e.status == 403) {
+      this.router.navigate(['/login']);
+      return true;
+    }
+    return false;
+  }
+
   constructor(private http: HttpClient, private router: Router) { }
 
   /*
@@ -101,6 +109,9 @@ export class ClienteService {
   getCliente(id: number): Observable<Cliente> {
     return this.http.get<Cliente>(`${this.urlEndpoint}/${id}`).pipe(
       catchError(e => {
+        if (this.isNoAutorizado(e)) {
+          return throwError(e);
+        }
         this.router.navigate(['/clientes']);
         console.error(e.error.mensaje);
         swal('Error al editar cliente', e.error.mensaje, 'error');
@@ -109,7 +120,7 @@ export class ClienteService {
     );
   }
 
-  create(cliente: Cliente): Observable<any> {
+  /*create(cliente: Cliente): Observable<any> {
     return this.http.post<any>(this.urlEndpoint, cliente, {headers: this.httpHeaders}).pipe(
       catchError(e => {
         console.error(e.error.mensaje);
@@ -117,11 +128,14 @@ export class ClienteService {
         return throwError(e);
       })
     );
-  }
+  }*/
 
   update(cliente: Cliente): Observable<any> {
-    return this.http.put<any>(this.urlEndpoint, cliente, {headers: this.httpHeaders}).pipe(
+    return this.http.put<any>(this.urlEndpoint, cliente, { headers: this.httpHeaders }).pipe(
       catchError(e => {
+        if (this.isNoAutorizado(e)) {
+          return throwError(e);
+        }
         if (e.status == 400) {
           return throwError(e);
         }
@@ -135,6 +149,9 @@ export class ClienteService {
   delete(id: number): Observable<Cliente> {
     return this.http.delete<Cliente>(`${this.urlEndpoint}/${id}`, {headers: this.httpHeaders}).pipe(
       catchError(e => {
+        if (this.isNoAutorizado(e)) {
+          return throwError(e);
+        }
         console.error(e.error.mensaje);
         swal(e.error.mensaje, e.error.error, 'error');
         return throwError(e);
@@ -150,11 +167,21 @@ export class ClienteService {
     const req = new HttpRequest('POST', `${this.urlEndpoint}/upload`, formData, {
       reportProgress: true
     });
-    return this.http.request(req);
+    return this.http.request(req).pipe(
+      catchError(e => {
+        this.isNoAutorizado(e);
+        return throwError(e);
+      })
+    );
   }
 
   getRegiones(): Observable<Region[]> {
-    return this.http.get<Region[]>(this.urlEndpoint + '/regiones');
+    return this.http.get<Region[]>(this.urlEndpoint + '/regiones').pipe(
+      catchError(e => {
+        this.isNoAutorizado(e);
+        return throwError(e);
+      })
+    );
   }
 
   /*subirFoto(file: File, id: any): Observable<Cliente> {
@@ -181,10 +208,13 @@ export class ClienteService {
     );
   }*/
 
-  /*create(cliente: Cliente): Observable<Cliente> {
-    return this.http.post(this.urlEndpoint, cliente, {headers: this.httpHeaders}).pipe(
+  create(cliente: Cliente): Observable<Cliente> {
+    return this.http.post(this.urlEndpoint, cliente, { headers: this.httpHeaders }).pipe(
       map((response: any) => response.cliente as Cliente),
       catchError(e => {
+        if (this.isNoAutorizado(e)) {
+          return throwError(e);
+        }
         if (e.status == 400) {
           return throwError(e);
         }
@@ -193,6 +223,6 @@ export class ClienteService {
         return throwError(e);
       })
     );
-  }*/
+  }
 
 }
