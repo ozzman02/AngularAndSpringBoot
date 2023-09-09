@@ -9,7 +9,7 @@ import { ClientesComponent } from './clientes/clientes.component';
 import { PaginatorComponent } from './paginator/paginator.component';
 import { ClienteService } from './clientes/cliente.service';
 import { RouterModule, Route, Routes } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { FormComponent } from './clientes/form.component';
 import { FormsModule } from '@angular/forms';
 import { registerLocaleData } from '@angular/common';
@@ -20,6 +20,10 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { DetalleComponent } from './clientes/detalle/detalle.component';
 import { LoginComponent } from './usuarios/login.component';
+import { AuthGuard } from './usuarios/guards/auth.guard';
+import { RoleGuard } from './usuarios/guards/role.guard';
+import { TokenInterceptor } from './usuarios/interceptors/token.interceptor';
+import { AuthInterceptor } from './usuarios/interceptors/auth.interceptor';
 
 registerLocaleData(localeES, 'es');
 
@@ -28,8 +32,8 @@ const routes: Routes = [
   { path: 'directivas', component: DirectivaComponent },
   { path: 'clientes', component: ClientesComponent },
   { path: 'clientes/page/:page', component: ClientesComponent },
-  { path: 'clientes/form', component: FormComponent },
-  { path: 'clientes/form/:id', component: FormComponent },
+  { path: 'clientes/form', component: FormComponent, canActivate: [AuthGuard, RoleGuard], data: {role: 'ROLE_ADMIN'} },
+  { path: 'clientes/form/:id', component: FormComponent, canActivate: [AuthGuard, RoleGuard], data: {role: 'ROLE_ADMIN'} },
   { path: 'login', component: LoginComponent }
 ];
 
@@ -54,7 +58,11 @@ const routes: Routes = [
     MatMomentDateModule,
     RouterModule.forRoot(routes)
   ],
-  providers: [ClienteService, {provide: LOCALE_ID, useValue: 'es' } ],
+  providers: [
+    ClienteService, 
+    { provide: LOCALE_ID, useValue: 'es' },
+    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true } ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

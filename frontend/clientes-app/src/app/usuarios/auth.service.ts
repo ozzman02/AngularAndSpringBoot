@@ -88,5 +88,12 @@ export class AuthService {
     sessionStorage.clear();
   }
 
+  hasRole(role: string): boolean {
+    if (this.usuario.roles.includes(role)) {
+      return true;
+    }
+    return false;
+  }
+
 
 }
