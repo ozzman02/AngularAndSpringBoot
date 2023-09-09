@@ -57,7 +57,7 @@ public class ApplicationConstants {
     public static final String ROLE_USER = "ROLE_USER";
     public static final String ROLE_ADMIN = "ROLE_ADMIN";
 
-    public static final String[] PUBLIC_ENDPOINTS = {"/api/clientes", "/api/clientes/page/**", "/api/uploads/img/**", "/images/**"};
+    public static final String[] PUBLIC_ENDPOINTS = {"/api/clientes", "/api/clientes/page/**", "/api/clientes/uploads/img/**", "/images/**"};
     public static final String SHOW_CLIENT_ENDPOINT = "/api/clientes/{id}";
     public static final String UPLOAD_CLIENT_ENDPOINT = "/api/clientes/upload";
     public static final String CREATE_CLIENT_ENDPOINT = "/api/clientes";
