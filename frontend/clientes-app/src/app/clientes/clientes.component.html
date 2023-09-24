@@ -17,7 +17,8 @@
         <table class="table table-bordered table-striped" *ngIf="clientes?.length > 0">
             <thead>
                 <tr>
-                    <th *ngIf="authService.hasRole('ROLE_USER')" >Perfil</th>
+                    <!--<th *ngIf="authService.hasRole('ROLE_USER')" >Perfil</th>-->
+                    <th>Perfil</th>
                     <th>Nombre</th>
                     <th>Apellido</th>
                     <th>Email</th>
@@ -28,7 +29,8 @@
             </thead>
             <tbody>
                 <tr *ngFor="let cliente of clientes">
-                    <td *ngIf="authService.hasRole('ROLE_USER')" >
+                    <!--<td *ngIf="authService.hasRole('ROLE_USER')" >-->
+                    <td>
                         <img
                             (click)="abrirModal(cliente)" 
                             *ngIf="cliente?.foto"
