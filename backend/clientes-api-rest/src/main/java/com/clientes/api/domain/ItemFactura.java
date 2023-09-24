@@ -1,5 +1,7 @@
 package com.clientes.api.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
@@ -19,6 +21,7 @@ public class ItemFactura implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "producto_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Producto producto;
 
     public Long getId() {
@@ -41,4 +44,11 @@ public class ItemFactura implements Serializable {
         return cantidad.doubleValue() * producto.getPrecio();
     }
 
+    public Producto getProducto() {
+        return producto;
+    }
+
+    public void setProducto(Producto producto) {
+        this.producto = producto;
+    }
 }
