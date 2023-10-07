@@ -9,6 +9,9 @@ public class ApplicationConstants {
     public static final Path IMAGES_DIRECTORY = Paths.get("src/main/resources/static/images");
     public static final String NO_USER_ICON_IMAGE_NAME = "no_user_icon.png";
 
+    public static final String ANGULAR_APP_ORIGIN_URL = "http://localhost:4200";
+    public static final String BASE_MAPPING = "/api";
+
     public static final int PAGE_SIZE = 4;
 
     public static final String MENSAJE = "mensaje";
@@ -36,6 +39,9 @@ public class ApplicationConstants {
 
     public static final String PROFILE_PHOTO_NOT_READABLE_EXCEPTION = "PROFILE_PHOTO_NOT_READABLE_EXCEPTION";
     public static final String PROFILE_PHOTO_NOT_READABLE_EXCEPTION_ERROR_MESSAGE = "La imagen ${first} no existe o no es legible";
+
+    public static final String INVOICE_NOT_FOUND_EXCEPTION = "CLIENT_NOT_FOUND_EXCEPTION";
+    public static final String INVOICE_NOT_FOUND_ERROR_MSG = "La factura #: ${first} no existe en la base de datos";
 
     public static final String TOKEN_KEY_ACCESS_PERMIT_ALL = "permitAll()";
     public static final String CHECK_TOKEN_ACCESS_IS_AUTHENTICATED = "isAuthenticated()";

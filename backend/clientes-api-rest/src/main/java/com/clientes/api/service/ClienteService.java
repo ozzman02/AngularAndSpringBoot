@@ -1,6 +1,7 @@
 package com.clientes.api.service;
 
 import com.clientes.api.domain.Cliente;
+import com.clientes.api.domain.Factura;
 import com.clientes.api.domain.Region;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,5 +23,11 @@ public interface ClienteService {
     boolean delete(Long id);
 
     List<Region> findAllRegions();
+
+    Factura findFacturaById(Long id);
+
+    Factura saveFactura(Factura factura);
+
+    void deleteFacturaById(Long id);
 
 }

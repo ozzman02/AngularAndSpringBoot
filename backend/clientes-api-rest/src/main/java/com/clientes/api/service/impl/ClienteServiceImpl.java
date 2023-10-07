@@ -1,9 +1,11 @@
 package com.clientes.api.service.impl;
 
 import com.clientes.api.domain.Cliente;
+import com.clientes.api.domain.Factura;
 import com.clientes.api.domain.Region;
 import com.clientes.api.exeception.ApplicationException;
 import com.clientes.api.repository.ClienteRepository;
+import com.clientes.api.repository.FacturaRepository;
 import com.clientes.api.service.ClienteService;
 import com.clientes.api.service.FileUploadService;
 import org.slf4j.Logger;
@@ -17,8 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.clientes.api.constants.ApplicationConstants.CLIENT_NOT_FOUND_ERROR_MESSAGE;
-import static com.clientes.api.constants.ApplicationConstants.CLIENT_NOT_FOUND_EXCEPTION;
+import static com.clientes.api.constants.ApplicationConstants.*;
 import static com.clientes.api.util.ApplicationUtil.buildErrorMessage;
 
 @Service
@@ -28,12 +29,17 @@ public class ClienteServiceImpl implements ClienteService {
 
     private final FileUploadService fileUploadService;
 
+    private final FacturaRepository facturaRepository;
+
     private final Logger log = LoggerFactory.getLogger(ClienteServiceImpl.class);
 
     @Autowired
-    public ClienteServiceImpl(ClienteRepository clienteRepository, FileUploadService fileUploadService) {
+    public ClienteServiceImpl(ClienteRepository clienteRepository,
+                              FileUploadService fileUploadService,
+                              FacturaRepository facturaRepository) {
         this.clienteRepository = clienteRepository;
         this.fileUploadService = fileUploadService;
+        this.facturaRepository = facturaRepository;
     }
 
     @Override
@@ -103,6 +109,28 @@ public class ClienteServiceImpl implements ClienteService {
     @Transactional(readOnly = true)
     public List<Region> findAllRegions() {
         return clienteRepository.findAllRegions();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Factura findFacturaById(Long id) {
+        return facturaRepository.findById(id)
+                .orElseThrow(() -> new ApplicationException(INVOICE_NOT_FOUND_EXCEPTION,
+                        buildErrorMessage(INVOICE_NOT_FOUND_ERROR_MSG, String.valueOf(id)),
+                        HttpStatus.NOT_FOUND)
+                );
+    }
+
+    @Override
+    @Transactional
+    public Factura saveFactura(Factura factura) {
+        return facturaRepository.save(factura);
+    }
+
+    @Override
+    @Transactional
+    public void deleteFacturaById(Long id) {
+        facturaRepository.deleteById(id);
     }
 
 }

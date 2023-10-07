@@ -22,9 +22,9 @@ import java.util.List;
 
 import static com.clientes.api.constants.ApplicationConstants.*;
 
-@CrossOrigin(origins = {"http://localhost:4200"})
+@CrossOrigin(origins = {ANGULAR_APP_ORIGIN_URL})
 @RestController
-@RequestMapping("/api")
+@RequestMapping(BASE_MAPPING)
 public class ClienteRestController {
 
     private final ClienteService clienteService;
