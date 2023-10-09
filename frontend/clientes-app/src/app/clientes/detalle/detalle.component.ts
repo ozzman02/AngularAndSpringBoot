@@ -5,6 +5,8 @@ import swal from 'sweetalert2';
 import { HttpEventType } from '@angular/common/http';
 import { ModalService } from './modal.service';
 import { AuthService } from 'src/app/usuarios/auth.service';
+import { FacturaService } from 'src/app/facturas/services/factura.service';
+import { Factura } from 'src/app/facturas/models/factura';
 
 @Component({
   selector: 'app-detalle',
@@ -25,23 +27,13 @@ export class DetalleComponent implements OnInit {
   constructor(
     private clienteService: ClienteService, 
     public modalService: ModalService, 
-    public authService: AuthService) { }
+    public authService: AuthService, 
+    private facturaService: FacturaService) { }
 
   ngOnInit(): void {
 
   }
-  /*ngOnInit(): void {
-    // =+ convierte a number
-    this.activatedRoute.paramMap.subscribe(params => {
-      let id: number =+ params.get('id');
-      if (id) {
-        this.clienteService.getCliente(id).subscribe(cliente => {
-          this.cliente = cliente;
-        });
-      }
-    });
-  }*/
-
+  
   seleccionarFoto(event: any) {
     this.fotoSeleccionada = event.target.files[0];
     this.progreso = 0;
@@ -78,16 +70,30 @@ export class DetalleComponent implements OnInit {
     this.progreso = 0;
   }
 
-  /*subirFoto() {
-    if (!this.fotoSeleccionada) {
-      swal('Error de carga', 'Debe seleccionar una foto', 'error');
-    } else {
-      this.clienteService.subirFoto(this.fotoSeleccionada, this.cliente.id)
-      .subscribe(cliente => {
-        this.cliente = cliente;
-        swal('La foto se ha subido completamente !', `La foto ${this.cliente.foto} se subió con éxito`, 'success');
-      });
-    }
-  }*/
+  delete(factura: Factura): void {
+    swal({
+      title: 'Confirmación de borrado',
+      text: `¿Está seguro que desea eliminar la factura ${factura.descripcion} ?`,
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonClass: 'btn btn-success',
+      cancelButtonClass: 'btn btn-danger',
+      buttonsStyling: false,
+      reverseButtons: true
+    }).then((result) => {
+      if (result.value) {
+        this.facturaService.delete(factura.id).subscribe(
+          response => {
+            this.cliente.facturas = this.cliente.facturas.filter(f => f !== factura);
+            swal('Factura eliminada', `Factura ${factura.descripcion} eliminada con éxito!`, 'success');
+          }
+        )
+      } 
+    })
+  }
 
 }
