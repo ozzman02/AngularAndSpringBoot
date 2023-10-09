@@ -2,10 +2,12 @@ package com.clientes.api.service.impl;
 
 import com.clientes.api.domain.Cliente;
 import com.clientes.api.domain.Factura;
+import com.clientes.api.domain.Producto;
 import com.clientes.api.domain.Region;
 import com.clientes.api.exeception.ApplicationException;
 import com.clientes.api.repository.ClienteRepository;
 import com.clientes.api.repository.FacturaRepository;
+import com.clientes.api.repository.ProductoRepository;
 import com.clientes.api.service.ClienteService;
 import com.clientes.api.service.FileUploadService;
 import org.slf4j.Logger;
@@ -31,15 +33,19 @@ public class ClienteServiceImpl implements ClienteService {
 
     private final FacturaRepository facturaRepository;
 
+    private final ProductoRepository productoRepository;
+
     private final Logger log = LoggerFactory.getLogger(ClienteServiceImpl.class);
 
     @Autowired
     public ClienteServiceImpl(ClienteRepository clienteRepository,
                               FileUploadService fileUploadService,
-                              FacturaRepository facturaRepository) {
+                              FacturaRepository facturaRepository,
+                              ProductoRepository productoRepository) {
         this.clienteRepository = clienteRepository;
         this.fileUploadService = fileUploadService;
         this.facturaRepository = facturaRepository;
+        this.productoRepository = productoRepository;
     }
 
     @Override
@@ -131,6 +137,12 @@ public class ClienteServiceImpl implements ClienteService {
     @Transactional
     public void deleteFacturaById(Long id) {
         facturaRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Producto> findProductoByNombre(String term) {
+        return productoRepository.findByNombreContainingIgnoreCase(term);
     }
 
 }
