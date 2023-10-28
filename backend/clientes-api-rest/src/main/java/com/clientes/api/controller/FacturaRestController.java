@@ -40,4 +40,10 @@ public class FacturaRestController {
         return clienteService.findProductoByNombre(term);
     }
 
+    @PostMapping("/facturas")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Factura crear(@RequestBody Factura factura) {
+        return clienteService.saveFactura(factura);
+    }
+
 }

@@ -42,6 +42,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS).permitAll()
                 .antMatchers(HttpMethod.DELETE, "/api/facturas/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/facturas").permitAll()
                 .anyRequest().authenticated()
                 .and().cors().configurationSource(corsConfigurationSource());
     }
