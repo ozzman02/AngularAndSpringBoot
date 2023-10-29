@@ -29,5 +29,4 @@ export class FacturaService {
     return this.http.post<Factura>(this.urlEndPoint, factura);
   }
 
-
 }

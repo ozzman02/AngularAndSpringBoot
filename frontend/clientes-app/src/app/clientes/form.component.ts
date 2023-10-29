@@ -56,6 +56,7 @@ export class FormComponent implements OnInit {
   }
 
   public update(): void {
+    this.cliente.facturas = null;
     this.clienteService.update(this.cliente)
       .subscribe(
         cliente => {
