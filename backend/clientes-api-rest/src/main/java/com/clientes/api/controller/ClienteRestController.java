@@ -49,7 +49,7 @@ public class ClienteRestController {
         return clienteService.findAll(PageRequest.of(page, PAGE_SIZE));
     }
 
-    //@Secured({ROLE_USER, ROLE_ADMIN})
+    @Secured({ROLE_USER, ROLE_ADMIN})
     @GetMapping("/clientes/{id}")
     public ResponseEntity<?> show(@PathVariable Long id) {
         return new ResponseEntity<>(clienteService.findById(id), HttpStatus.OK);

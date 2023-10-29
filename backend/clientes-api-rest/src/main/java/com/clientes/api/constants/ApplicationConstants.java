@@ -63,19 +63,12 @@ public class ApplicationConstants {
     public static final String ROLE_USER = "ROLE_USER";
     public static final String ROLE_ADMIN = "ROLE_ADMIN";
 
-    public static final String[] PUBLIC_ENDPOINTS = {
+    public static final String[] GET_PUBLIC_ENDPOINTS = {
             "/api/clientes",
             "/api/clientes/page/**",
             "/api/clientes/uploads/img/**",
-            "/images/**",
-            "/api/clientes/{id}",
-            "/api/facturas/**"
+            "/images/**"
     };
-
-    public static final String SHOW_CLIENT_ENDPOINT = "/api/clientes/{id}";
-    public static final String UPLOAD_CLIENT_ENDPOINT = "/api/clientes/upload";
-    public static final String CREATE_CLIENT_ENDPOINT = "/api/clientes";
-    public static final String PRIVATE_ENDPOINTS ="/api/clientes/**";
 
     public static final String ANGULAR_APP_ALLOWED_ORIGIN = "http://localhost:4200";
     public static final String[] ALLOWED_METHODS = {"GET", "POST", "PUT", "DELETE", "OPTIONS"};

@@ -40,9 +40,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS).permitAll()
-                .antMatchers(HttpMethod.DELETE, "/api/facturas/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/facturas").permitAll()
+                .antMatchers(HttpMethod.GET, GET_PUBLIC_ENDPOINTS).permitAll()
                 .anyRequest().authenticated()
                 .and().cors().configurationSource(corsConfigurationSource());
     }
