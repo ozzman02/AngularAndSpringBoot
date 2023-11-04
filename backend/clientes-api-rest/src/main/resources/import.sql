@@ -2,7 +2,7 @@ INSERT INTO roles (nombre) VALUES ('ROLE_USER');
 INSERT INTO roles (nombre) VALUES ('ROLE_ADMIN');
 
 INSERT INTO usuarios (username, password, enabled, nombre, apellido, email) VALUES ('user', '$2a$10$ErgB6ZGOen0Eo4jW9x0yO.08u/IIheGny4C8ZmYn8//NwF8ZVBibu', 1, 'User', 'User', 'user@gmail.com');
-INSERT INTO usuarios (username, password, enabled, nombre, apellido, email) VALUES ('admin', '$2a$10$ErgB6ZGOen0Eo4jW9x0yO.08u/IIheGny4C8ZmYn8//NwF8ZVBibu', 1, 'Oscar', 'SantamarÌa', 'osantamaria@gmail.com');
+INSERT INTO usuarios (username, password, enabled, nombre, apellido, email) VALUES ('admin', '$2a$10$ErgB6ZGOen0Eo4jW9x0yO.08u/IIheGny4C8ZmYn8//NwF8ZVBibu', 1, 'Oscar', 'Santamar√≠a', 'osantamaria@gmail.com');
 
 INSERT INTO usuarios_roles (usuario_id, role_id) VALUES (1, 1);
 INSERT INTO usuarios_roles (usuario_id, role_id) VALUES (2, 1);
@@ -16,16 +16,16 @@ INSERT INTO productos (nombre, precio, create_at) VALUES('Hewlett Packard Multif
 INSERT INTO productos (nombre, precio, create_at) VALUES('Bianchi Bicicleta Aro 26', 69990, NOW());
 INSERT INTO productos (nombre, precio, create_at) VALUES('Mica Comoda 5 Cajones', 299990, NOW());
 
-INSERT INTO regiones (id, nombre) VALUES  (1, "SudamÈrica");
-INSERT INTO regiones (id, nombre) VALUES  (2, "CentroamÈrica");
-INSERT INTO regiones (id, nombre) VALUES  (3, "NorteamÈrica");
+INSERT INTO regiones (id, nombre) VALUES  (1, "Sudam√©rica");
+INSERT INTO regiones (id, nombre) VALUES  (2, "Centroam√©rica");
+INSERT INTO regiones (id, nombre) VALUES  (3, "Norteam√©rica");
 INSERT INTO regiones (id, nombre) VALUES  (4, "Europa");
 INSERT INTO regiones (id, nombre) VALUES  (5, "Asia");
-INSERT INTO regiones (id, nombre) VALUES  (6, "¡frica");
-INSERT INTO regiones (id, nombre) VALUES  (7, "OceanÌa");
-INSERT INTO regiones (id, nombre) VALUES  (8, "Ant·rtida");
+INSERT INTO regiones (id, nombre) VALUES  (6, "√Åfrica");
+INSERT INTO regiones (id, nombre) VALUES  (7, "Ocean√≠a");
+INSERT INTO regiones (id, nombre) VALUES  (8, "Ant√°rtida");
 
-INSERT INTO clientes (nombre, apellido, email, create_at, region_id) VALUES ('AndrÈs', 'Guzm·n', 'profesor@gmail.com', CURDATE(), 1);
+INSERT INTO clientes (nombre, apellido, email, create_at, region_id) VALUES ('Andr√©s', 'Guzm√°n', 'profesor@gmail.com', CURDATE(), 1);
 INSERT INTO clientes (nombre, apellido, email, create_at, region_id) VALUES ('Luis', 'Venegas', 'lvenegas@gmail.com', CURDATE(), 1);
 INSERT INTO clientes (nombre, apellido, email, create_at, region_id) VALUES ('Karla', 'Solis', 'ksolis@gmail.com', CURDATE(), 1);
 INSERT INTO clientes (nombre, apellido, email, create_at, region_id) VALUES ('Melissa', 'Protti', 'mprotti@gmail.com', CURDATE(), 1);
