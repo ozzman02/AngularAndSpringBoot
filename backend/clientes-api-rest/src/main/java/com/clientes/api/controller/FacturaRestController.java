@@ -13,7 +13,7 @@ import java.util.List;
 import static com.clientes.api.constants.ApplicationConstants.*;
 import static com.clientes.api.constants.ApplicationConstants.ROLE_ADMIN;
 
-@CrossOrigin(origins = {ANGULAR_APP_ORIGIN_URL})
+@CrossOrigin(origins = {ANGULAR_APP_ORIGIN_URL, ALL_ORIGINS})
 @RequestMapping(BASE_MAPPING)
 @RestController
 public class FacturaRestController {

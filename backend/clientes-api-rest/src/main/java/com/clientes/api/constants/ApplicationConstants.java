@@ -71,8 +71,10 @@ public class ApplicationConstants {
     };
 
     public static final String ANGULAR_APP_ALLOWED_ORIGIN = "http://localhost:4200";
+    public static final String ALL_ORIGINS = "*";
     public static final String[] ALLOWED_METHODS = {"GET", "POST", "PUT", "DELETE", "OPTIONS"};
     public static final String[] ALLOWED_HEADERS = {"Content-Type", "Authorization"};
+    public static final String CORS_CONFIGURATION_PATTERN = "/**";
 
 
 

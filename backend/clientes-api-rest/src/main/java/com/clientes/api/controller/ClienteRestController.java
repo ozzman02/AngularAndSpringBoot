@@ -22,7 +22,7 @@ import java.util.List;
 
 import static com.clientes.api.constants.ApplicationConstants.*;
 
-@CrossOrigin(origins = {ANGULAR_APP_ORIGIN_URL})
+@CrossOrigin(origins = {ANGULAR_APP_ORIGIN_URL, ALL_ORIGINS})
 @RestController
 @RequestMapping(BASE_MAPPING)
 public class ClienteRestController {
