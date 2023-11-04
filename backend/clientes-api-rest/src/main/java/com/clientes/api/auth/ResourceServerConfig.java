@@ -48,7 +48,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(ANGULAR_APP_ALLOWED_ORIGIN, ALL_ORIGINS));
+        configuration.setAllowedOriginPatterns(Arrays.asList(ANGULAR_APP_ALLOWED_ORIGIN, ALL_ORIGINS));
         configuration.setAllowedMethods(Arrays.asList(ALLOWED_METHODS));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(Arrays.asList(ALLOWED_HEADERS));
