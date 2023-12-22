@@ -1,21 +1,55 @@
 package com.backend.chat.controller;
 
 import com.backend.chat.document.Mensaje;
+import com.backend.chat.service.ChatService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import java.util.Date;
+import java.util.Random;
 
 @Controller
 public class ChatController {
 
+    private String[] colores = {"red", "green", "blue", "magenta", "purple", "orange"};
+
+    @Autowired
+    private ChatService chatService;
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
+
+    /*
+        /app/mensaje we send messages to this destination using publish from the front end.
+        /chat/mensaje is an event. The front end subscribes to the event
+    */
     @MessageMapping("/mensaje")
     @SendTo("/chat/mensaje")
     public Mensaje recibeMensaje(Mensaje mensaje) {
         mensaje.setFecha(new Date().getTime());
-        mensaje.setTexto("Recibido por el broker: " + mensaje.getTexto());
+        if (mensaje.getTipo().equals("NUEVO_USUARIO")) {
+            mensaje.setColor(colores[new Random().nextInt(colores.length)]);
+            mensaje.setTexto("nuevo usuario");
+        } else {
+            chatService.guardarMensaje(mensaje);
+        }
         return mensaje;
     }
+
+    @MessageMapping("/escribiendo")
+    @SendTo("/chat/escribiendo")
+    public String estaEscribiendo(String username) {
+        return username.concat(" está escribiendo ...");
+    }
+
+    @MessageMapping("/historial")
+    public void historial(String clientId) {
+        messagingTemplate.convertAndSend("/chat/historial/" + clientId, chatService.obtenerUltimos10Mensajes());
+    }
+
+
 
 }
